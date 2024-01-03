@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.example.Operations.calcAverage;
@@ -65,18 +67,34 @@ public class DecisionTreeOperations {
         return H;
     }
 
-    
-    public static AttributesEnum racine(List<DataEntry> dataEntries) {
-        double mpgEntropy = calculateEntropy(AttributesEnum.MPG, dataEntries);
-        double displacementEntropy = calculateEntropy(AttributesEnum.DISPLACEMENT, dataEntries);
-        double horsepowerEntropy = calculateEntropy(AttributesEnum.HORSEPOWER, dataEntries);
-        double weightEntropy = calculateEntropy(AttributesEnum.WEIGHT, dataEntries);
-        double accelerationEntropy = calculateEntropy(AttributesEnum.ACCELERATION, dataEntries);
 
-        double min = Math.min(Math.min(Math.min(mpgEntropy, displacementEntropy), Math.min(horsepowerEntropy, weightEntropy)), accelerationEntropy);
+    public static AttributesEnum racine(List<DataEntry> dataEntries, List<AttributesEnum> excludedAttributes) {
 
-        AttributesEnum racine = min == mpgEntropy ? AttributesEnum.MPG : min == displacementEntropy ? AttributesEnum.DISPLACEMENT : min == horsepowerEntropy ? AttributesEnum.HORSEPOWER : min == weightEntropy ? AttributesEnum.WEIGHT : AttributesEnum.ACCELERATION;
+        List<AttributesEnum> allAttributes = new ArrayList<AttributesEnum>();
+        allAttributes.add(AttributesEnum.MPG);
+        allAttributes.add(AttributesEnum.DISPLACEMENT);
+        allAttributes.add(AttributesEnum.HORSEPOWER);
+        allAttributes.add(AttributesEnum.WEIGHT);
+        allAttributes.add(AttributesEnum.ACCELERATION);
+        List<CoupletAttribute> calculatedCouplets = new ArrayList<>();
 
+        for (AttributesEnum attribute : allAttributes) {
+            if (!excludedAttributes.contains(attribute)) {
+
+                double entr = calculateEntropy(attribute, dataEntries);
+
+                calculatedCouplets.add(new CoupletAttribute(attribute, entr));
+            }
+        }
+        System.out.println(calculatedCouplets);
+
+        CoupletAttribute minAttribute = calculatedCouplets.get(0);
+        for (CoupletAttribute coupletAttribute : calculatedCouplets) {
+            minAttribute = minAttribute.getValue() > coupletAttribute.getValue() ? coupletAttribute : minAttribute;
+        }
+
+
+        AttributesEnum racine = minAttribute.getAttribute();
         return racine;
 
     }
@@ -97,7 +115,6 @@ public class DecisionTreeOperations {
                 }
             }
         }
-
         return leafList;
     }
 
@@ -113,11 +130,16 @@ public class DecisionTreeOperations {
 
     public static OriginsEnum predictEntry(DataEntry dataEntry, List<DataEntry> dataEntries) {
         AttributesEnum racine;
+        List<AttributesEnum> excludeAttribute = new ArrayList<AttributesEnum>();
         OriginsEnum origin = null;
         do {
-            racine = racine(dataEntries);
+            racine = racine(dataEntries, excludeAttribute);
+
             dataEntries = leaf(dataEntries, racine, classifyAttribute(dataEntry.enumToAttribute(racine), calcAverage(racine, dataEntries)));
+            System.out.println(racine + " " + dataEntries.size());
+            System.out.println(dataEntries);
             origin = originHomogene(dataEntries);
+            excludeAttribute.add(racine);
         } while (origin == null);
         return origin;
     }

@@ -32,10 +32,10 @@ public class Main {
 
         }
 
-        DataEntry entry = new DataEntry(26, 97, 46, 1835, 21);
-        System.out.println(KNNOperations.predictEntry(entry, 1, entries));
+        DataEntry entry = new DataEntry(36, 79, 58, 1825, 19);
+      //  System.out.println(BayesOperations.predictEntry(entry, entries));
         System.out.println(DecisionTreeOperations.predictEntry(entry, entries));
-        System.out.println(BayesOperations.predictEntry(entry, entries));
+    // System.out.println(BayesOperations.predictEntry(entry, entries));
 
     }
 }

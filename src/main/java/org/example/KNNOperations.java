@@ -19,7 +19,7 @@ public class KNNOperations {
 
         }
 
-        euclDistList.sort(Comparator.comparingDouble(Couplet::getEuclDist));
+        euclDistList.sort(Comparator.comparingDouble(Couplet::getValue));
 
         return euclDistList;
     }

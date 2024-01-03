@@ -6,26 +6,27 @@ package org.example;
 public class Couplet
 {
   private OriginsEnum origin;
-    private float euclDist;
 
     public OriginsEnum getOrigin() {
         return origin;
     }
 
-    public float getEuclDist() {
-        return euclDist;
-    }
-
-    public Couplet(OriginsEnum origin, float euclDit) {
+    public void setOrigin(OriginsEnum origin) {
         this.origin = origin;
-        this.euclDist = euclDit;
     }
 
-    @Override
-    public String toString() {
-        return "Couplet{" +
-                "origin=" + origin +
-                ", euclDit=" + euclDist +
-                '}';
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    private float value;
+
+    public Couplet(OriginsEnum origin, float value) {
+        this.origin = origin;
+        this.value = value;
     }
 }
